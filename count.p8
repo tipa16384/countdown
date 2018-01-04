@@ -68,22 +68,22 @@ function _init()
 	terrain={}
 	terrain[0]=-3*8
 	terrain[128*8]=-3*8
-	generateTerrain(terrain,0,128*8,50,0.50)
+	generateTerrain(terrain,0,128*8,50,0.50,-3*8)
 	
 	terrain2={}
 	terrain2[0]=-2*8
 	terrain2[128*8]=-2*8
-	generateTerrain(terrain2,0,128*8,60,0.60)
+	generateTerrain(terrain2,0,128*8,60,0.60,0)
 end
 
-function generateTerrain(terrain, leftIndex, rightIndex, displacement, roughness)
+function generateTerrain(terrain, leftIndex, rightIndex, displacement, roughness, mmaxx)
 	if ((leftIndex+1) == rightIndex) return
 	local midIndex = flr((leftIndex+rightIndex)/2)
 	local change = (rnd(2)-1) * displacement
-	terrain[midIndex] = (terrain[leftIndex] + terrain[rightIndex]) / 2 + change
+	terrain[midIndex] = min((terrain[leftIndex] + terrain[rightIndex]) / 2 + change, mmaxx)
 	displacement *= roughness
-	generateTerrain(terrain, leftIndex, midIndex, displacement, roughness)
-	generateTerrain(terrain, midIndex, rightIndex, displacement, roughness)
+	generateTerrain(terrain, leftIndex, midIndex, displacement, roughness, mmaxx)
+	generateTerrain(terrain, midIndex, rightIndex, displacement, roughness, mmaxx)
 end
 
 function _draw()
@@ -331,7 +331,7 @@ function dorot(sh)
 end
 
 function drawmap()
-	spr(192, 48, -55, 16, 4)
+	spr(192, 48+ship.camx/3, -55, 16, 4)
 	drawterrain(terrain,1)
 	drawterrain(terrain2,1)
 	map(0,0,0,-29*8,128,128)
